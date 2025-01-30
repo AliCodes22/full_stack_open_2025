@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import axios from "axios";
 import Course from "./Components/Course";
 
 function App() {
@@ -48,6 +49,10 @@ function App() {
   ];
 
   const parts = courses.map((item) => item.parts);
+
+  const promise = axios.get("http://localhost:3001/notes");
+
+  promise.then((response) => console.log(response));
 
   return (
     <>
