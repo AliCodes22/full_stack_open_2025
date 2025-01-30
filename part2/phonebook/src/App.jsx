@@ -1,68 +1,37 @@
 import { useState } from "react";
+import Filter from "./components/Filter";
+import PersonForm from "./components/PersonForm";
+import Persons from "./components/Persons";
 
 function App() {
   const [persons, setPersons] = useState([]);
 
   const [newName, setNewName] = useState({
-    id: persons.length + 1,
     name: "",
     number: "",
   });
+
+  const [search, setSearch] = useState("");
 
   return (
     <>
       <div>
         <h2>Phonebook</h2>
-        <form
-          onSubmit={(e) => {
-            e.preventDefault();
-            if (persons.find((person) => person.name === newName.name)) {
-              window.alert(`${newName.name} is already added to the phonebook`);
-            } else {
-              setPersons([...persons, newName]);
-              setNewName({
-                id: persons.length + 1,
-                name: "",
-                number: "",
-              });
-            }
-
-            console.log("button clicked", e.target);
-          }}
-        >
-          <div>
-            name:{" "}
-            <input
-              value={newName.name}
-              onChange={(e) => {
-                console.log("name", e.target.value);
-                setNewName({
-                  ...newName,
-                  name: e.target.value,
-                });
-              }}
-            />
-          </div>
-          <div>
-            number:{" "}
-            <input
-              value={newName.number}
-              onChange={(e) => {
-                setNewName({
-                  ...newName,
-                  number: e.target.value,
-                });
-              }}
-            />
-          </div>
-          <div>
-            <button type="submit">Add</button>
-          </div>
-        </form>
+        <Filter value={search} onChange={(e) => setSearch(e.target.value)} />
+        <div>
+          <h2>add a new</h2>
+        </div>
+        <PersonForm
+          persons={persons}
+          newName={newName}
+          setNewName={setNewName}
+          setPersons={setPersons}
+        />
         <h2>Numbers</h2>
-        {persons.map((person) => (
-          <p key={person.id}>{person.name}</p>
-        ))}
+        {/* The list of names is filtered according to the search string 
+            and is then mapped to show the list
+        */}
+        <Persons persons={persons} search={search} />
       </div>
     </>
   );
