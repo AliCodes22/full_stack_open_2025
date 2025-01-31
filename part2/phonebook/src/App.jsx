@@ -38,7 +38,7 @@ function App() {
         {/* The list of names is filtered according to the search string 
             and is then mapped to show the list
         */}
-        <Persons persons={persons} search={search} />
+        <Persons persons={persons} search={search} setPersons={setPersons} />
       </div>
     </>
   );

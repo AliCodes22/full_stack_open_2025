@@ -1,8 +1,43 @@
+import axios from "axios";
+import { addPerson, deletePerson, updateNumber } from "../services/person";
+
 const PersonForm = ({ persons, newName, setNewName, setPersons }) => {
   return (
     <form
       onSubmit={(e) => {
         e.preventDefault();
+
+        const existingPerson = persons.find(
+          (person) =>
+            person.name === newName.name && person.number !== newName.number
+        );
+
+        if (existingPerson) {
+          window.confirm(
+            `${existingPerson.name} is already in the phonebook. Replace the old number with a new one?`
+          );
+          const updatedPersonInfo = {
+            ...existingPerson,
+            number: newName.number,
+          };
+
+          updateNumber(existingPerson.id, updatedPersonInfo);
+
+          // update state
+
+          setPersons(
+            persons.map((person) =>
+              person.id === existingPerson.id ? updatedPersonInfo : person
+            )
+          );
+          setNewName({
+            name: "",
+            number: "",
+          });
+
+          return;
+        }
+
         if (persons.find((person) => person.name === newName.name)) {
           window.alert(`${newName.name} is already added to the phonebook`);
         } else {
@@ -11,6 +46,11 @@ const PersonForm = ({ persons, newName, setNewName, setPersons }) => {
             name: newName.name,
             number: newName.number,
           };
+
+          // update db
+          addPerson(newPerson);
+
+          // update state
           setPersons([...persons, newPerson]);
           setNewName({
             name: "",
