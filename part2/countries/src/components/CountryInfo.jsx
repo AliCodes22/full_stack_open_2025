@@ -3,16 +3,33 @@ import { useEffect, useState } from "react";
 
 const CountryInfo = ({ country }) => {
   const [countryData, setCountryData] = useState(null);
+  const [weatherData, setWeatherData] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  const apiKey = import.meta.env.VITE_MY_KEY;
 
   useEffect(() => {
-    axios
-      .get(`https://studies.cs.helsinki.fi/restcountries/api/name/${country}`)
-      .then((response) => setCountryData(response.data))
-      .catch((error) => console.log(error.error));
+    const fetchCountryData = () => {
+      axios
+        .get(`https://studies.cs.helsinki.fi/restcountries/api/name/${country}`)
+        .then((response) => {
+          setCountryData(response.data);
+          const { capital } = response.data;
+          const fetchWeatherData = axios
+            .get(
+              `https://api.openweathermap.org/data/2.5/weather?q=${capital}&appid=${apiKey}`
+            )
+            .then((response) => {
+              setWeatherData(response.data);
+              setLoading(false);
+            });
+        })
+        .catch((error) => console.log(error.error));
+    };
+    fetchCountryData();
   }, [country]);
 
-  console.log(countryData);
-  if (!countryData) {
+  if (loading) {
     return <p>Loading..</p>;
   }
 
@@ -23,7 +40,21 @@ const CountryInfo = ({ country }) => {
     capital,
     flags: { png },
   } = countryData;
+
   const languagesArray = Object.values(languages);
+
+  const {
+    main: { temp },
+    weather,
+    wind: { speed },
+  } = weatherData;
+
+  // imgIcon
+  const imgIcon = weather[0].icon;
+
+  //fetch image from API
+
+  const temperatureInCelcius = (temp - 273.15).toFixed(0);
 
   return (
     <>
@@ -38,6 +69,17 @@ const CountryInfo = ({ country }) => {
         ))}
       </ul>
       <img src={png} />
+      {weatherData && (
+        <>
+          <h3>Weather in {capital}</h3>
+          <p>Temperature: {temperatureInCelcius} Celcius</p>
+          <img
+            src={`https://openweathermap.org/img/wn/${imgIcon}@2x.png`}
+            alt="weather"
+          />
+          <p>Wind: {speed} m/s</p>
+        </>
+      )}
     </>
   );
 };
