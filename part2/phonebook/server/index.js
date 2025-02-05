@@ -4,6 +4,8 @@ const app = express();
 
 const port = 3001;
 
+app.use(express.json());
+
 app.listen(port, () => {
   console.log("App running");
 });
@@ -42,4 +44,45 @@ app.get("/info", (req, res) => {
     <br/>
     <p>${date}</p>
     `);
+});
+
+// get person by id
+app.get("/api/persons/:id", (req, res) => {
+  const { id } = req.params;
+
+  const person = persons.find((person) => person.id === id);
+
+  if (!person) {
+    res.status(404).end();
+  }
+
+  res.status(200).json(person);
+});
+
+// add person
+app.post("/api/persons", (req, res) => {
+  const { name, number } = req.body;
+
+  if (!name || !number) {
+    return res.status(400).json({
+      message: "Please fill out all the fields",
+    });
+  }
+
+  const foundPerson = persons.find((person) => person.name === name);
+
+  if (foundPerson) {
+    return res.status(409).json({
+      message: "Name already exists",
+    });
+  }
+
+  const id =
+    persons.length > 0
+      ? Math.max(...persons.map((person) => Number(person.id))) + 1
+      : 1;
+  const newPerson = { name, number, id };
+  persons.push(newPerson);
+
+  res.status(201).json(newPerson);
 });
