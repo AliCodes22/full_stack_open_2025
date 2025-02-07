@@ -1,12 +1,15 @@
 const express = require("express");
 const morgan = require("morgan");
+const cors = require("cors");
 
 const app = express();
 
-const port = 3001;
+const PORT = process.env.PORT || 3001;
 
 app.use(express.json());
 app.use(morgan("tiny"));
+app.use(cors());
+app.use(express.static("dist"));
 
 morgan.token("body", (req, res) => JSON.stringify(req.body));
 app.use(
@@ -15,11 +18,11 @@ app.use(
   )
 );
 
-app.listen(port, () => {
+app.listen(PORT, () => {
   console.log("App running");
 });
 
-const persons = [
+let persons = [
   {
     id: "1",
     name: "Arto Hellas",
@@ -94,6 +97,14 @@ app.post("/api/persons", (req, res) => {
   persons.push(newPerson);
 
   res.status(201).json(newPerson);
+});
+
+app.delete("/api/persons/:id", (req, res) => {
+  const { id } = req.params;
+
+  persons = persons.filter((person) => person.id !== id);
+
+  res.status(204).end();
 });
 
 // middleware
