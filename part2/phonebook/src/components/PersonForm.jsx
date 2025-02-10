@@ -1,7 +1,14 @@
 import axios from "axios";
 import { addPerson, deletePerson, updateNumber } from "../services/person";
+import { useState } from "react";
 
-const PersonForm = ({ persons, newName, setNewName, setPersons }) => {
+const PersonForm = ({
+  persons,
+  newName,
+  setNewName,
+  setPersons,
+  setErrorMessage,
+}) => {
   return (
     <form
       onSubmit={(e) => {
@@ -48,14 +55,20 @@ const PersonForm = ({ persons, newName, setNewName, setPersons }) => {
           };
 
           // update db
-          addPerson(newPerson);
+          addPerson(newPerson)
+            .then((savedPerson) => {
+              setPersons([...persons, savedPerson]);
+              console.log(newPerson);
+              setNewName({ name: "", number: "" });
+              setErrorMessage(null);
+            })
+            .catch((error) => {
+              const errorMsg =
+                error.response?.data?.error || "An error occurred";
+              setErrorMessage(errorMsg);
+            });
 
           // update state
-          setPersons([...persons, newPerson]);
-          setNewName({
-            name: "",
-            number: "",
-          });
         }
       }}
     >

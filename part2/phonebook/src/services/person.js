@@ -7,7 +7,16 @@ const fetchPersons = () => {
 };
 
 const addPerson = (newPerson) => {
-  axios.post(baseUrl, newPerson);
+  return axios
+    .post(baseUrl, newPerson)
+    .then((response) => {
+      console.log(response);
+      return response.data;
+    })
+    .catch((error) => {
+      console.log(error.response.data.message);
+      throw error;
+    });
 };
 
 const deletePerson = (id) => {

@@ -1,12 +1,15 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import Filter from "./components/Filter";
+
 import PersonForm from "./components/PersonForm";
 import Persons from "./components/Persons";
 import { fetchPersons } from "./services/person";
+import Notification from "./components/Notification";
 
 function App() {
   const [persons, setPersons] = useState([]);
+  const [errorMessage, setErrorMessage] = useState(null);
 
   const [newName, setNewName] = useState({
     name: "",
@@ -24,6 +27,7 @@ function App() {
   return (
     <>
       <div>
+        <Notification message={errorMessage} />
         <h2>Phonebook</h2>
         <Filter value={search} onChange={(e) => setSearch(e.target.value)} />
         <div>
@@ -34,6 +38,7 @@ function App() {
           newName={newName}
           setNewName={setNewName}
           setPersons={setPersons}
+          setErrorMessage={setErrorMessage}
         />
         <h2>Numbers</h2>
         {/* The list of names is filtered according to the search string 
