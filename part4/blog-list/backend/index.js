@@ -1,8 +1,7 @@
 const express = require("express");
+require("express-async-errors");
 const cors = require("cors");
-
 const mongoose = require("mongoose");
-
 const Blog = require("./models/blog");
 const blogRouter = require("./controllers/blogRouter");
 
@@ -26,3 +25,18 @@ const port = process.env.PORT || 3001;
 app.listen(port, () => {
   console.log(`App running on ${port}`);
 });
+
+const errorHandler = (error, req, res, next) => {
+  if (error.name === "CastError") {
+    return res.status(400).json({ error: "Invalid ID format" });
+  } else if (error.name === "ValidationError") {
+    return res.status(400).json({
+      error: "Validation failed",
+      details: error,
+    });
+  }
+
+  res.status(500).json({ error: "Internal server error" });
+};
+
+app.use(errorHandler);
