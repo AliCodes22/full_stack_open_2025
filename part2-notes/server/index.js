@@ -1,6 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const Note = require("./models/note");
+const User = require("./models/user");
 
 // initialize express app
 const app = express();
@@ -70,8 +71,10 @@ app.delete("/api/notes/:id", (req, res, next) => {
 });
 
 // adding a new note
-app.post("/api/notes", (req, res) => {
+app.post("/api/notes", async (req, res) => {
   const body = req.body;
+
+  const user = await User.findById(body.userId);
 
   if (body.content === undefined) {
     return response.status(400).json({
@@ -81,7 +84,8 @@ app.post("/api/notes", (req, res) => {
 
   const note = new Note({
     content: body.content,
-    important: body.important,
+    important: body.important === undefined ? false : body.important,
+    user: user.id,
   });
 
   note.save().then((savedNote) => {
