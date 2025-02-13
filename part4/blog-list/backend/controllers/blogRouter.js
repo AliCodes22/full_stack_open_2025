@@ -1,11 +1,12 @@
 const express = require("express");
 const Blog = require("../models/blog");
+const User = require("../models/user");
 
 const router = express.Router();
 
 // get full blog list
 router.get("/", async (req, res) => {
-  const blogs = await Blog.find({});
+  const blogs = await Blog.find({}).populate("user");
   return res.json(blogs);
 });
 
@@ -15,6 +16,11 @@ router.post("/", async (req, res) => {
   console.log(req.body);
 
   const savedBlog = await blog.save();
+
+  const user = await User.findById(req.body.user);
+  user.blogs = [...user.blogs, savedBlog];
+  await user.save();
+
   res.status(201).json(savedBlog);
 });
 
