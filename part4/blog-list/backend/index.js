@@ -6,6 +6,7 @@ const Blog = require("./models/blog");
 const blogRouter = require("./controllers/blogRouter");
 const userRouter = require("./controllers/userRouter");
 const loginRouter = require("./controllers/loginRouter");
+const tokenExtractor = require("./middleware/tokenExtractor");
 
 require("dotenv").config();
 
@@ -20,6 +21,7 @@ const app = express();
 
 app.use(cors());
 app.use(express.json());
+app.use(tokenExtractor);
 app.use("/api/blogs", blogRouter);
 app.use("/api/users", userRouter);
 app.use("/api/login", loginRouter);
@@ -37,6 +39,10 @@ const errorHandler = (error, req, res, next) => {
     return res.status(400).json({
       error: "Validation failed",
       details: error,
+    });
+  } else if (error.name === "TokenExpiredError") {
+    return response.status(401).json({
+      error: "token expired",
     });
   }
 

@@ -39,4 +39,10 @@ userRouter.post("/", async (req, res) => {
   res.status(201).json(newUser);
 });
 
+userRouter.get("/", async (req, res) => {
+  const users = await User.find({}).populate("blogs");
+
+  return res.status(200).json(users);
+});
+
 module.exports = userRouter;

@@ -1,6 +1,8 @@
 const express = require("express");
 const Blog = require("../models/blog");
 const User = require("../models/user");
+const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 
 const router = express.Router();
 
@@ -13,11 +15,18 @@ router.get("/", async (req, res) => {
 // create a new entry
 router.post("/", async (req, res) => {
   const blog = new Blog(req.body);
-  console.log(req.body);
 
+  const decodedToken = jwt.verify(req.token, process.env);
+
+  if (!decodedToken.id) {
+    return res.status(401).json({
+      error: "Invalid token",
+    });
+  }
+
+  const user = await User.findById(decodedToken.id);
   const savedBlog = await blog.save();
 
-  const user = await User.findById(req.body.user);
   user.blogs = [...user.blogs, savedBlog];
   await user.save();
 
