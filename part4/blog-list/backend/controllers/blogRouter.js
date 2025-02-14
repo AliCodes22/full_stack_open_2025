@@ -16,7 +16,7 @@ router.get("/", async (req, res) => {
 router.post("/", async (req, res) => {
   const blog = new Blog(req.body);
 
-  const decodedToken = jwt.verify(req.token, process.env);
+  const decodedToken = jwt.verify(req.token, process.env.SECRET);
 
   if (!decodedToken.id) {
     return res.status(401).json({
@@ -24,7 +24,7 @@ router.post("/", async (req, res) => {
     });
   }
 
-  const user = await User.findById(decodedToken.id);
+  const user = req.user;
   const savedBlog = await blog.save();
 
   user.blogs = [...user.blogs, savedBlog];
@@ -60,6 +60,45 @@ router.put("/:id", async (req, res) => {
   const updatedBlog = await blog.save();
 
   res.status(200).json(updatedBlog);
+});
+
+// delete blog entry
+router.delete("/:id", async (req, res) => {
+  const { id } = req.params;
+
+  // verify user
+  const decodedToken = jwt.verify(req.token, process.env.SECRET);
+
+  // if either id or user is invalid, return error
+  if (!decodedToken.id || !decodedToken.user) {
+    return res.status(404).json({
+      message: "username or id invalid",
+    });
+  }
+
+  // find user from db
+  const user = req.user;
+
+  // get the blog post
+  const blog = await Blog.findById(id);
+
+  if (!blog) {
+    return res.status(404).json({
+      message: "blog not found",
+    });
+  }
+
+  if (blog.user.toString() === decodedToken.id.toString()) {
+    await Blog.findByIdAndDelete(id);
+    user.blogs = user.blogs.filter((blogId) => blogId.toString() !== id);
+
+    await user.save();
+    return res.status(204).end();
+  } else {
+    return res.status(403).json({
+      message: "unauthorized",
+    });
+  }
 });
 
 module.exports = router;

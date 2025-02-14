@@ -7,6 +7,7 @@ const blogRouter = require("./controllers/blogRouter");
 const userRouter = require("./controllers/userRouter");
 const loginRouter = require("./controllers/loginRouter");
 const tokenExtractor = require("./middleware/tokenExtractor");
+const userExtractor = require("./middleware/userExtractor");
 
 require("dotenv").config();
 
@@ -21,8 +22,8 @@ const app = express();
 
 app.use(cors());
 app.use(express.json());
-app.use(tokenExtractor);
-app.use("/api/blogs", blogRouter);
+
+app.use("/api/blogs", tokenExtractor, userExtractor, blogRouter);
 app.use("/api/users", userRouter);
 app.use("/api/login", loginRouter);
 
