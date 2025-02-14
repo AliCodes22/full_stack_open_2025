@@ -33,19 +33,6 @@ router.post("/", async (req, res) => {
   res.status(201).json(savedBlog);
 });
 
-// delete blog list entry
-router.delete("/:id", async (req, res) => {
-  const { id } = req.params;
-  const blog = await Blog.findById(id);
-
-  if (!blog) {
-    return res.status(404).json({ message: "Blog not found" });
-  }
-
-  await Blog.findByIdAndDelete(id);
-  res.status(201).end();
-});
-
 router.put("/:id", async (req, res) => {
   const { id } = req.params;
   const { likes } = req.body;
@@ -90,8 +77,10 @@ router.delete("/:id", async (req, res) => {
 
   if (blog.user.toString() === decodedToken.id.toString()) {
     await Blog.findByIdAndDelete(id);
-    user.blogs = user.blogs.filter((blogId) => blogId.toString() !== id);
-
+    const updatedBlogs = user.blogs.filter(
+      (blogId) => blogId.toString() !== id
+    );
+    user.blogs = updatedBlogs;
     await user.save();
     return res.status(204).end();
   } else {
