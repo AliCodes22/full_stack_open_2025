@@ -81,7 +81,9 @@ router.delete("/:id", async (req, res) => {
       (blogId) => blogId.toString() !== id
     );
     user.blogs = updatedBlogs;
+
     await user.save();
+
     return res.status(204).end();
   } else {
     return res.status(403).json({
