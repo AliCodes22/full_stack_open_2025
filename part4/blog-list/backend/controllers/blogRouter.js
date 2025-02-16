@@ -3,6 +3,7 @@ const Blog = require("../models/blog");
 const User = require("../models/user");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const userExtractor = require("../middleware/userExtractor");
 
 const router = express.Router();
 
@@ -13,7 +14,7 @@ router.get("/", async (req, res) => {
 });
 
 // create a new entry
-router.post("/", async (req, res) => {
+router.post("/", userExtractor, async (req, res) => {
   const blog = new Blog(req.body);
 
   const decodedToken = jwt.verify(req.token, process.env.SECRET);
