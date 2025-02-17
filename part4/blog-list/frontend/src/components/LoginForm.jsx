@@ -1,10 +1,9 @@
 import { useState } from "react";
 import loginService from "../services/login";
 
-const LoginForm = ({ setIsLoggedIn, setUser }) => {
+const LoginForm = ({ setIsLoggedIn, setUser, setError }) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [errorMessage, setErrorMessage] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -21,9 +20,9 @@ const LoginForm = ({ setIsLoggedIn, setUser }) => {
       setIsLoggedIn(true);
       setUser(user);
     } catch (error) {
-      setErrorMessage("Wrong credentials");
+      setError("Wrong credentials");
       setTimeout(() => {
-        setErrorMessage(null);
+        setError(null);
       }, 5000);
     }
   };
@@ -51,7 +50,7 @@ const LoginForm = ({ setIsLoggedIn, setUser }) => {
             onChange={({ target }) => setPassword(target.value)}
           />
         </div>
-        <button type="Submit">Login</button>
+        <button type="submit">Login</button>
       </form>
     </div>
   );

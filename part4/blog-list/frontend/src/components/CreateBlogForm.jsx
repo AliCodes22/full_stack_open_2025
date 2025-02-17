@@ -1,7 +1,7 @@
 import { useState } from "react";
 import blogService from "../services/blogs";
 
-const CreateBlogForm = () => {
+const CreateBlogForm = ({ setBlogs, setNotification }) => {
   const [title, setTitle] = useState("");
   const [author, setAuthor] = useState("");
   const [url, setUrl] = useState("");
@@ -17,7 +17,18 @@ const CreateBlogForm = () => {
     console.log(blog);
 
     try {
-      await blogService.createBlog(blog);
+      const newBlog = await blogService.createBlog(blog);
+
+      setBlogs((prev) => [...prev, newBlog]);
+      setNotification(newBlog);
+
+      setTimeout(() => {
+        setNotification(null);
+      }, 5000);
+
+      setTitle("");
+      setAuthor("");
+      setUrl("");
     } catch (error) {
       console.error(error);
     }
