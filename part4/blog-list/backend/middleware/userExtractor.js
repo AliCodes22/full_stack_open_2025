@@ -9,6 +9,7 @@ const userExtractor = async (req, res, next) => {
     });
   }
   const decodedToken = jwt.verify(req.token, process.env.SECRET);
+  console.log(decodedToken);
 
   if (!decodedToken.id) {
     return res.status(401).json({
@@ -16,7 +17,7 @@ const userExtractor = async (req, res, next) => {
     });
   }
 
-  const user = await User.findById(decodedToken._id.toString());
+  const user = await User.findById(decodedToken.id.toString());
 
   if (!user) {
     return res.status(404).json({

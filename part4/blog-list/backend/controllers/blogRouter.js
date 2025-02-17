@@ -28,6 +28,7 @@ router.post("/", userExtractor, async (req, res) => {
   const user = req.user;
   const savedBlog = await blog.save();
 
+  console.log(savedBlog);
   user.blogs = [...user.blogs, savedBlog];
   await user.save();
 

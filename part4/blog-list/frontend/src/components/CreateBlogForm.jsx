@@ -1,12 +1,26 @@
 import { useState } from "react";
+import blogService from "../services/blogs";
 
 const CreateBlogForm = () => {
   const [title, setTitle] = useState("");
   const [author, setAuthor] = useState("");
   const [url, setUrl] = useState("");
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+
+    const blog = {
+      title,
+      author,
+      url,
+    };
+    console.log(blog);
+
+    try {
+      await blogService.createBlog(blog);
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (
