@@ -14,6 +14,7 @@ const App = () => {
   const [notification, setNotification] = useState(null);
   const [error, setError] = useState(null);
   const [isFormVisible, setIsFormVisible] = useState(false);
+  const [isDetailVisible, setIsDetailVisible] = useState(false);
 
   //check if user's logged in
   useEffect(() => {
@@ -66,6 +67,7 @@ const App = () => {
           <Togglable
             buttonLabel="Create blog"
             setIsFormVisible={setIsFormVisible}
+            hideOrCancel={"Cancel"}
           >
             <CreateBlogForm
               setBlogs={setBlogs}

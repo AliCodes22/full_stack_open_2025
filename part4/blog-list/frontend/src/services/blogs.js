@@ -39,4 +39,25 @@ const createBlog = async (newBlog) => {
   return response.data;
 };
 
-export default { getAll, createBlog };
+const addLikes = async (blog) => {
+  let token = "";
+  const id = blog._id;
+
+  const user = JSON.parse(window.localStorage.getItem("user"));
+
+  if (user) {
+    token = user.token;
+  }
+
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  };
+
+  const response = await axios.put(`${baseUrl}/${id}`, blog, config);
+
+  return response.data;
+};
+
+export default { getAll, createBlog, addLikes };

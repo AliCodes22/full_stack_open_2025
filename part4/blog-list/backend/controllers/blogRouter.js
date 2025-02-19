@@ -40,6 +40,8 @@ router.put("/:id", async (req, res) => {
   const { likes } = req.body;
   const blog = await Blog.findById(id);
 
+  console.log(blog);
+
   if (!blog) {
     return res.status(404).json({ message: "blog not found" });
   }
@@ -52,18 +54,12 @@ router.put("/:id", async (req, res) => {
 });
 
 // delete blog entry
-router.delete("/:id", async (req, res) => {
+router.delete("/:id", userExtractor, async (req, res) => {
   const { id } = req.params;
 
-  // verify user
   const decodedToken = jwt.verify(req.token, process.env.SECRET);
 
-  // if either id or user is invalid, return error
-  if (!decodedToken.id || !decodedToken.user) {
-    return res.status(404).json({
-      message: "username or id invalid",
-    });
-  }
+  // verify user
 
   // find user from db
   const user = req.user;

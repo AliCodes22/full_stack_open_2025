@@ -1,6 +1,11 @@
 import { useState } from "react";
 
-const Togglable = ({ buttonLabel, children, setIsFormVisible }) => {
+const Togglable = ({
+  buttonLabel,
+  hideOrCancel,
+  children,
+  setIsFormVisible,
+}) => {
   const [visible, setVisible] = useState(false);
   const hideWhenVisible = {
     display: visible ? "none" : "",
@@ -23,7 +28,7 @@ const Togglable = ({ buttonLabel, children, setIsFormVisible }) => {
       {visible && (
         <div>
           {children}
-          <button onClick={toggleVisibility}>Cancel</button>
+          <button onClick={toggleVisibility}>{hideOrCancel}</button>
         </div>
       )}
     </div>
