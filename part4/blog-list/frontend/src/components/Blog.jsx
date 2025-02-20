@@ -6,6 +6,8 @@ const Blog = ({ blog, setBlogs }) => {
   const [areDetailsVisible, setAreDetailsVisible] = useState(false);
   const [likes, setLikes] = useState(blog.likes);
 
+  const user = JSON.parse(window.localStorage.getItem("user"));
+
   const handleLikes = async () => {
     const updatedBlog = {
       ...blog,
@@ -15,6 +17,13 @@ const Blog = ({ blog, setBlogs }) => {
     const response = await blogService.addLikes(updatedBlog);
     setLikes(response.likes);
     setBlogs(await blogService.getAll());
+  };
+
+  const handleDelete = async () => {
+    if (window.confirm(`Remove blog ${blog.title} by ${blog.author}`)) {
+      const updatedBlogs = await blogService.deleteBlog(blog._id);
+      setBlogs(updatedBlogs);
+    }
   };
 
   return (
@@ -46,6 +55,16 @@ const Blog = ({ blog, setBlogs }) => {
               </button>
             </p>
             <p>{blog.author}</p>
+            {user.username === blog?.user?.username && (
+              <button
+                style={{
+                  backgroundColor: "lightblue",
+                }}
+                onClick={handleDelete}
+              >
+                Remove
+              </button>
+            )}
           </div>
         )}
       </div>

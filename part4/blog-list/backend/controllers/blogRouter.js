@@ -10,12 +10,17 @@ const router = express.Router();
 // get full blog list
 router.get("/", async (req, res) => {
   const blogs = await Blog.find({}).populate("user");
-  return res.json(blogs);
+  const sortedBlogs = blogs.sort((a, b) => b.likes - a.likes);
+
+  return res.status(200).json(sortedBlogs);
 });
 
 // create a new entry
 router.post("/", userExtractor, async (req, res) => {
-  const blog = new Blog(req.body);
+  const blog = new Blog({
+    ...req.body,
+    user: req.user._id,
+  });
 
   const decodedToken = jwt.verify(req.token, process.env.SECRET);
 
@@ -29,10 +34,10 @@ router.post("/", userExtractor, async (req, res) => {
   const savedBlog = await blog.save();
 
   console.log(savedBlog);
-  user.blogs = [...user.blogs, savedBlog];
+  req.user.blogs.push(savedBlog._id);
   await user.save();
 
-  res.status(201).json(savedBlog);
+  res.status(201).json(user.blogs);
 });
 
 router.put("/:id", async (req, res) => {
@@ -56,9 +61,6 @@ router.put("/:id", async (req, res) => {
 // delete blog entry
 router.delete("/:id", userExtractor, async (req, res) => {
   const { id } = req.params;
-
-  const decodedToken = jwt.verify(req.token, process.env.SECRET);
-
   // verify user
 
   // find user from db
@@ -73,19 +75,20 @@ router.delete("/:id", userExtractor, async (req, res) => {
     });
   }
 
-  if (blog.user.toString() === decodedToken.id.toString()) {
+  if (blog.user._id.toString() === req.user._id.toString()) {
     await Blog.findByIdAndDelete(id);
-    const updatedBlogs = user.blogs.filter(
+
+    const updatedUserBlogs = (req.user.blogs = req.user.blogs.filter(
       (blogId) => blogId.toString() !== id
-    );
-    user.blogs = updatedBlogs;
+    ));
+    await req.user.save();
 
-    await user.save();
+    const updatedBlogs = await Blog.find({}).populate("user");
 
-    return res.status(204).end();
+    return res.status(200).json(updatedBlogs);
   } else {
     return res.status(403).json({
-      message: "unauthorized",
+      message: "Unauthorized",
     });
   }
 });
