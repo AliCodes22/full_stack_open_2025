@@ -29,7 +29,6 @@ const reducer = (state = initialState, action) => {
       );
 
     case "CREATE":
-      console.log(action);
       return [...state, action.payload];
     default:
       return state;
@@ -48,6 +47,7 @@ export const createAnecdote = (anecdote) => {
     type: "CREATE",
     payload: {
       content: anecdote,
+      id: getId(),
       votes: 0,
     },
   };
