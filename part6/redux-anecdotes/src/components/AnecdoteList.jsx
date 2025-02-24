@@ -1,7 +1,7 @@
 import { useDispatch } from "react-redux";
 import { addVote } from "../reducers/anecdoteReducer";
 import { setNotification } from "../reducers/notificationReducer";
-
+import { vote } from "../services/anecdoteService";
 const AnecdoteList = ({ anecdotes }) => {
   const dispatch = useDispatch();
 
@@ -13,9 +13,15 @@ const AnecdoteList = ({ anecdotes }) => {
           <div>
             has {anecdote.votes}
             <button
-              onClick={() => {
-                dispatch(addVote(anecdote.id));
-                dispatch(setNotification(`You voted for ${anecdote.content}`));
+              onClick={async () => {
+                const anecdote = await vote(anecdote.id);
+
+                if (anecdote) {
+                  dispatch(addVote(anecdote.id));
+                  dispatch(
+                    setNotification(`You voted for ${anecdote.content}`)
+                  );
+                }
               }}
             >
               vote
