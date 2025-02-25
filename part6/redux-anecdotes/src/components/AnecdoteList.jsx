@@ -14,12 +14,15 @@ const AnecdoteList = ({ anecdotes }) => {
             has {anecdote.votes}
             <button
               onClick={async () => {
-                const anecdote = await vote(anecdote.id);
+                const votedAnecdote = await vote(anecdote.id, {
+                  ...anecdote,
+                  votes: anecdote.votes + 1,
+                });
 
-                if (anecdote) {
-                  dispatch(addVote(anecdote.id));
+                if (votedAnecdote) {
+                  dispatch(addVote(votedAnecdote.id));
                   dispatch(
-                    setNotification(`You voted for ${anecdote.content}`)
+                    setNotification(`You voted for ${votedAnecdote.content}`)
                   );
                 }
               }}

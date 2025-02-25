@@ -12,13 +12,24 @@ export const getAnecdotes = async () => {
   }
 };
 
-export const vote = async (id) => {
+export const vote = async (id, object) => {
   try {
-    const response = await axios.put(`${baseUrl}/${id}`);
-    console.log(response);
-    const updatedAnecdote = { ...response, votes: response.votes + 1 };
+    const response = await axios.put(`${baseUrl}/${id}`, object);
 
-    return updatedAnecdote;
+    return response.data;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const createNewAnecdote = async (content) => {
+  try {
+    const response = await axios.post(baseUrl, {
+      content,
+      votes: 0,
+    });
+
+    return response.data;
   } catch (error) {
     console.log(error);
   }
