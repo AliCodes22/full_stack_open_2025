@@ -4,21 +4,14 @@ import AnecdoteForm from "./components/AnecdoteForm";
 import AnecdoteList from "./components/AnecdoteList";
 import Notification from "./components/Notification";
 import { getAnecdotes } from "./services/anecdoteService";
-import { setAnecdotes } from "./reducers/anecdoteReducer";
+import { fetchAnecdotes, setAnecdotes } from "./reducers/anecdoteReducer";
 
 const App = () => {
   const anecdotes = useSelector((state) => state.anecdotes);
   const dispatch = useDispatch();
 
-  console.log(anecdotes);
   useEffect(() => {
-    const fetchData = async () => {
-      const anecdotes = await getAnecdotes();
-
-      dispatch(setAnecdotes(anecdotes));
-    };
-
-    fetchData();
+    dispatch(fetchAnecdotes());
   }, [dispatch]);
 
   const sortedAnecdotes = [...anecdotes].sort((a, b) => b.votes - a.votes);
