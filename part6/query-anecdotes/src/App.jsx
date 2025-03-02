@@ -7,9 +7,13 @@ import {
 import AnecdoteForm from "./components/AnecdoteForm";
 import Notification from "./components/Notification";
 import { addNewVote, getAnecdotes } from "./services/requests";
+import { useContext } from "react";
+import NotificationContext from "../NotificationContext";
 
 const App = () => {
   const queryClient = useQueryClient();
+  const { notification, notificationDispatch } =
+    useContext(NotificationContext);
 
   const { data, isError, isLoading } = useQuery({
     queryKey: ["anecdotes"],
@@ -33,6 +37,10 @@ const App = () => {
       ...anecdote,
       votes: anecdote.votes + 1,
     });
+    notificationDispatch({
+      type: "VOTED",
+      payload: anecdote.content,
+    });
   };
 
   if (isLoading) {
@@ -48,7 +56,7 @@ const App = () => {
     <div>
       <h3>Anecdote app</h3>
 
-      <Notification />
+      <Notification content={notification} />
       <AnecdoteForm />
 
       {anecdotes.map((anecdote) => (
