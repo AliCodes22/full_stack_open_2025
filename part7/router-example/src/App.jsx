@@ -1,10 +1,27 @@
-import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Link,
+  Navigate,
+  useMatch,
+} from "react-router-dom";
 import Home from "./components/Home";
 import Notes from "./components/Notes";
 import Users from "./components/Users";
 import Note from "./components/Note";
+import { Children, useState } from "react";
+import Login from "./components/Login";
 
 function App() {
+  const [user, setUser] = useState(null);
+  const match = useMatch("/notes/:id");
+  console.log(match);
+
+  const login = (user) => {
+    setUser(user);
+  };
+
   const padding = {
     padding: 5,
   };
@@ -29,9 +46,12 @@ function App() {
       user: "Arto Hellas",
     },
   ];
+  const note = match
+    ? notes.find((note) => note.id === Number(match.params.id))
+    : null;
 
   return (
-    <Router>
+    <div>
       <div>
         <Link style={padding} to="/">
           Home
@@ -42,19 +62,31 @@ function App() {
         <Link style={padding} to="/users">
           Users
         </Link>
+        {user ? (
+          <em>{user} logged in</em>
+        ) : (
+          <Link style={padding} to="/login">
+            Login
+          </Link>
+        )}
       </div>
 
       <Routes>
         <Route path="/notes" element={<Notes notes={notes} />} />
-        <Route path="/notes/:id" element={<Note notes={notes} />} />
-        <Route path="/users" element={<Users />} />
+        <Route path="/notes/:id" element={<Note note={note} />} />
+        <Route
+          path="/users"
+          element={user ? <Users /> : <Navigate replace to="/login" />}
+        />
         <Route path="/" element={<Home />} />
+        <Route path="/login" element={<Login onLogin={login} />} />
       </Routes>
 
-      <div>
-        <i>Note app, Department of Computer Science 2024</i>
-      </div>
-    </Router>
+      <footer>
+        <br />
+        <em>Note app, Department of Computer Science</em>
+      </footer>
+    </div>
   );
 }
 
