@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-const CreateNew = ({ addNew }) => {
+const CreateNew = ({ addNew, setNotification }) => {
   const [content, setContent] = useState("");
   const [author, setAuthor] = useState("");
   const [info, setInfo] = useState("");
@@ -13,6 +13,11 @@ const CreateNew = ({ addNew }) => {
       info,
       votes: 0,
     });
+    setNotification(content);
+
+    setTimeout(() => {
+      setNotification("");
+    }, 5000);
   };
 
   return (
