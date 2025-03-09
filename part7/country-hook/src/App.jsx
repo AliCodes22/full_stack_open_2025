@@ -29,18 +29,21 @@ const useCountry = (name) => {
         setCountry(res.data);
         setFound(true);
       })
-      .catch((error) => setFound(false));
+      .catch((error) => {
+        setCountry(null);
+        setFound(false);
+      });
   }, [name]);
 
   return { country, found };
 };
 
-const Country = ({ country }) => {
+const Country = ({ country, found }) => {
   if (!country) {
     return null;
   }
 
-  if (!country.found) {
+  if (!found) {
     return <div>not found</div>;
   }
 
@@ -77,7 +80,7 @@ const App = () => {
         <button>find</button>
       </form>
 
-      <Country country={country} />
+      <Country country={country.country} found={country.found} />
     </div>
   );
 };

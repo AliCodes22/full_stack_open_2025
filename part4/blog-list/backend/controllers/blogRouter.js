@@ -22,18 +22,9 @@ router.post("/", userExtractor, async (req, res) => {
     user: req.user._id,
   });
 
-  const decodedToken = jwt.verify(req.token, process.env.SECRET);
-
-  if (!decodedToken.id) {
-    return res.status(401).json({
-      error: "Invalid token",
-    });
-  }
-
   const user = req.user;
   const savedBlog = await blog.save();
 
-  console.log(savedBlog);
   req.user.blogs.push(savedBlog._id);
   await user.save();
 
