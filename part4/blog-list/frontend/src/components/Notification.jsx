@@ -1,9 +1,10 @@
 const Notification = ({ message }) => {
   if (message === null) {
-    return;
+    return null;
   }
 
-  const { title, author } = message;
+  console.log(message);
+
   return (
     <div
       style={{
@@ -16,7 +17,7 @@ const Notification = ({ message }) => {
         fontWeight: "bold",
       }}
     >
-      A new blog {title} by {author} added
+      {message}
     </div>
   );
 };

@@ -21,7 +21,6 @@ const getAll = async () => {
     },
   });
 
-  console.log(blogs.data);
   return blogs.data;
 };
 
@@ -35,8 +34,8 @@ const createBlog = async (newBlog) => {
   };
 
   const response = await axios.post(baseUrl, newBlog, config);
-  console.log(response);
 
+  console.log(response.data);
   return response.data;
 };
 

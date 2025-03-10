@@ -6,15 +6,17 @@ import CreateBlogForm from "./components/CreateBlogForm";
 import Notification from "./components/Notification";
 import ErrorMessage from "./components/ErrorMessage";
 import Togglable from "./components/Togglable";
+import { useSelector } from "react-redux";
 
 const App = () => {
   const [blogs, setBlogs] = useState([]);
   const [user, setUser] = useState(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [notification, setNotification] = useState(null);
   const [error, setError] = useState(null);
   const [isFormVisible, setIsFormVisible] = useState(false);
   const [isDetailVisible, setIsDetailVisible] = useState(false);
+
+  const notification = useSelector((state) => state.notification);
 
   //check if user's logged in
   useEffect(() => {
@@ -39,7 +41,7 @@ const App = () => {
   return isLoggedIn ? (
     <div>
       <h2>blogs</h2>
-      <Notification message={notification} />
+      <Notification message={notification.message} />
       {user && (
         <div>
           <div
@@ -69,10 +71,7 @@ const App = () => {
             setIsFormVisible={setIsFormVisible}
             hideOrCancel={"Cancel"}
           >
-            <CreateBlogForm
-              setBlogs={setBlogs}
-              setNotification={setNotification}
-            />
+            <CreateBlogForm setBlogs={setBlogs} />
           </Togglable>
         </div>
       )}

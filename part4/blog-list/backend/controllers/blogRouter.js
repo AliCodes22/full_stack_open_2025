@@ -28,7 +28,7 @@ router.post("/", userExtractor, async (req, res) => {
   req.user.blogs.push(savedBlog._id);
   await user.save();
 
-  res.status(201).json(user.blogs);
+  res.status(201).json(savedBlog);
 });
 
 router.put("/:id", async (req, res) => {
