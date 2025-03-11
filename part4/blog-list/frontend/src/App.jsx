@@ -6,17 +6,19 @@ import CreateBlogForm from "./components/CreateBlogForm";
 import Notification from "./components/Notification";
 import ErrorMessage from "./components/ErrorMessage";
 import Togglable from "./components/Togglable";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { initializeBlogs } from "./reducers/blogReducer";
 
 const App = () => {
-  const [blogs, setBlogs] = useState([]);
   const [user, setUser] = useState(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [error, setError] = useState(null);
   const [isFormVisible, setIsFormVisible] = useState(false);
   const [isDetailVisible, setIsDetailVisible] = useState(false);
+  const dispatch = useDispatch();
 
   const notification = useSelector((state) => state.notification);
+  const blogs = useSelector((state) => state.blogs);
 
   //check if user's logged in
   useEffect(() => {
@@ -31,8 +33,7 @@ const App = () => {
   useEffect(() => {
     const fetchBlogs = async () => {
       if (user) {
-        const blogs = await blogService.getAll();
-        setBlogs(blogs);
+        dispatch(initializeBlogs());
       }
     };
     fetchBlogs();
@@ -71,7 +72,7 @@ const App = () => {
             setIsFormVisible={setIsFormVisible}
             hideOrCancel={"Cancel"}
           >
-            <CreateBlogForm setBlogs={setBlogs} />
+            <CreateBlogForm />
           </Togglable>
         </div>
       )}
@@ -79,9 +80,7 @@ const App = () => {
       {/* <CreateBlogForm setBlogs={setBlogs} setNotification={setNotification} /> */}
 
       {!isFormVisible &&
-        blogs.map((blog) => (
-          <Blog key={blog._id} blog={blog} setBlogs={setBlogs} />
-        ))}
+        blogs.map((blog) => <Blog key={blog._id} blog={blog} />)}
     </div>
   ) : (
     <>

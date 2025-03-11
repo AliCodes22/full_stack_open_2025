@@ -6,7 +6,7 @@ import {
 } from "../reducers/notificationReducer";
 import { useDispatch } from "react-redux";
 
-const CreateBlogForm = ({ setBlogs }) => {
+const CreateBlogForm = () => {
   const [title, setTitle] = useState("");
   const [author, setAuthor] = useState("");
   const [url, setUrl] = useState("");
