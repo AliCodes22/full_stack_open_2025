@@ -10,7 +10,7 @@ const blogSlice = createSlice({
     setBlogs: (state, action) => {
       return action.payload;
     },
-    createNewBlog: (state, action) => {
+    addNewBlog: (state, action) => {
       const { title, author, url } = action.payload;
       const newBlog = { title, author, url };
       state.push(newBlog);
@@ -18,7 +18,7 @@ const blogSlice = createSlice({
   },
 });
 
-export const { setBlogs } = blogSlice.actions;
+export const { setBlogs, addNewBlog } = blogSlice.actions;
 export default blogSlice.reducer;
 
 export const initializeBlogs = () => {
@@ -28,9 +28,9 @@ export const initializeBlogs = () => {
   };
 };
 
-export const newBlog = (createdBlog) => {
+export const createBlogAction = (createdBlog) => {
   return async (dispatch) => {
-    const newBlog = await blogService.createBlog(createdBlog);
-    dispatch(createNewBlog(newBlog));
+    const blog = await blogService.createBlog(createdBlog);
+    dispatch(addNewBlog(blog));
   };
 };

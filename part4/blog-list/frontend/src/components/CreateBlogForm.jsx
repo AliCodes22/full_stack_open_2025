@@ -5,6 +5,7 @@ import {
   newBlogNotification,
 } from "../reducers/notificationReducer";
 import { useDispatch } from "react-redux";
+import { createBlogAction } from "../reducers/blogReducer";
 
 const CreateBlogForm = () => {
   const [title, setTitle] = useState("");
@@ -22,10 +23,9 @@ const CreateBlogForm = () => {
     };
 
     try {
-      const newBlog = await blogService.createBlog(blog);
+      dispatch(createBlogAction(blog));
 
-      setBlogs((prev) => [...prev, newBlog]);
-      dispatch(newBlogNotification(newBlog));
+      dispatch(newBlogNotification(blog));
 
       setTimeout(() => {
         dispatch(clearNotification());
