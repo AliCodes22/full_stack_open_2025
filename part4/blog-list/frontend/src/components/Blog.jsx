@@ -1,10 +1,12 @@
 import { useState, useEffect } from "react";
 import blogService from "../services/blogs";
 import Togglable from "./Togglable";
+import { useDispatch } from "react-redux";
+import { addLikeAction } from "../reducers/blogReducer";
 
-const Blog = ({ blog, setBlogs }) => {
+const Blog = ({ blog }) => {
   const [areDetailsVisible, setAreDetailsVisible] = useState(false);
-  const [likes, setLikes] = useState(blog.likes);
+  const dispatch = useDispatch();
 
   const user = JSON.parse(window.localStorage.getItem("user"));
 
@@ -14,9 +16,7 @@ const Blog = ({ blog, setBlogs }) => {
       likes: blog.likes + 1,
     };
 
-    const response = await blogService.addLikes(updatedBlog);
-    setLikes(response.likes);
-    setBlogs(await blogService.getAll());
+    dispatch(addLikeAction(updatedBlog));
   };
 
   const handleDelete = async () => {

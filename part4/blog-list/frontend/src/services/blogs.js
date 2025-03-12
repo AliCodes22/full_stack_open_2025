@@ -50,6 +50,7 @@ const addLikes = async (blog) => {
   };
 
   const response = await axios.put(`${baseUrl}/${id}`, blog, config);
+  console.log(response.data);
 
   return response.data;
 };

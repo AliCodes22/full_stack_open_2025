@@ -15,11 +15,17 @@ const blogSlice = createSlice({
       const newBlog = { title, author, url };
       state.push(newBlog);
     },
+    likeBlog: (state, action) => {
+      return state.map((blog) =>
+        blog._id === action.payload._id
+          ? { ...blog, likes: action.payload.likes }
+          : blog
+      );
+    },
   },
 });
 
-export const { setBlogs, addNewBlog } = blogSlice.actions;
-export default blogSlice.reducer;
+// API calls
 
 export const initializeBlogs = () => {
   return async (dispatch) => {
@@ -34,3 +40,14 @@ export const createBlogAction = (createdBlog) => {
     dispatch(addNewBlog(blog));
   };
 };
+
+export const addLikeAction = (blog) => {
+  return async (dispatch) => {
+    const newlyLikedBlog = await blogService.addLikes(blog);
+    dispatch(likeBlog(newlyLikedBlog));
+  };
+};
+
+export const { setBlogs, addNewBlog, likeBlog } = blogSlice.actions;
+
+export default blogSlice.reducer;
