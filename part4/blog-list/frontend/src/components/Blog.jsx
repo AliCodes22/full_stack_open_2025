@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import blogService from "../services/blogs";
 import Togglable from "./Togglable";
 import { useDispatch } from "react-redux";
-import { addLikeAction } from "../reducers/blogReducer";
+import { addLikeAction, deleteBlogAction } from "../reducers/blogReducer";
 
 const Blog = ({ blog }) => {
   const [areDetailsVisible, setAreDetailsVisible] = useState(false);
@@ -21,8 +21,7 @@ const Blog = ({ blog }) => {
 
   const handleDelete = async () => {
     if (window.confirm(`Remove blog ${blog.title} by ${blog.author}`)) {
-      const updatedBlogs = await blogService.deleteBlog(blog._id);
-      setBlogs(updatedBlogs);
+      dispatch(deleteBlogAction(blog._id));
     }
   };
 

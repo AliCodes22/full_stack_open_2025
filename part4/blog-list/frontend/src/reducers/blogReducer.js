@@ -22,6 +22,9 @@ const blogSlice = createSlice({
           : blog
       );
     },
+    deleteBlog: (state, action) => {
+      return action.payload;
+    },
   },
 });
 
@@ -45,6 +48,13 @@ export const addLikeAction = (blog) => {
   return async (dispatch) => {
     const newlyLikedBlog = await blogService.addLikes(blog);
     dispatch(likeBlog(newlyLikedBlog));
+  };
+};
+
+export const deleteBlogAction = (id) => {
+  return async (dispatch) => {
+    const newBlogList = await blogService.deleteBlog(id);
+    dispatch(setBlogs(newBlogList));
   };
 };
 
