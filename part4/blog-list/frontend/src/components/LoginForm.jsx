@@ -1,9 +1,13 @@
 import { useState } from "react";
 import loginService from "../services/login";
+import { useSelector, useDispatch } from "react-redux";
+import { setUser } from "../reducers/userReducer";
 
 const LoginForm = ({ setIsLoggedIn, setUser, setError }) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+
+  const dispatch = useDispatch();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -18,7 +22,7 @@ const LoginForm = ({ setIsLoggedIn, setUser, setError }) => {
       setUsername("");
       setPassword("");
       setIsLoggedIn(true);
-      setUser(user);
+      dispatch(setUser(user));
     } catch (error) {
       setError("Wrong credentials");
       setTimeout(() => {

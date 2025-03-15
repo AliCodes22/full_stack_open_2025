@@ -8,9 +8,9 @@ import ErrorMessage from "./components/ErrorMessage";
 import Togglable from "./components/Togglable";
 import { useDispatch, useSelector } from "react-redux";
 import { initializeBlogs } from "./reducers/blogReducer";
+import { setUser } from "./reducers/userReducer";
 
 const App = () => {
-  const [user, setUser] = useState(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [error, setError] = useState(null);
   const [isFormVisible, setIsFormVisible] = useState(false);
@@ -19,6 +19,8 @@ const App = () => {
 
   const notification = useSelector((state) => state.notification);
   const blogs = useSelector((state) => state.blogs);
+  const user = useSelector((state) => state.user);
+  console.log(user);
 
   //check if user's logged in
   useEffect(() => {
@@ -26,7 +28,7 @@ const App = () => {
 
     if (loggedInUser) {
       setIsLoggedIn(true);
-      setUser(loggedInUser);
+      dispatch(setUser(loggedInUser));
     }
   }, []);
 
@@ -85,11 +87,7 @@ const App = () => {
   ) : (
     <>
       <ErrorMessage error={error} />
-      <LoginForm
-        setIsLoggedIn={setIsLoggedIn}
-        setUser={setUser}
-        setError={setError}
-      />
+      <LoginForm setIsLoggedIn={setIsLoggedIn} setError={setError} />
     </>
   );
 };
