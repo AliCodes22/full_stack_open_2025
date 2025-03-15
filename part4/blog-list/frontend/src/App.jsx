@@ -10,6 +10,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { initializeBlogs } from "./reducers/blogReducer";
 import { setUser } from "./reducers/userReducer";
 import NotificationContext from "./context/NotificationContext";
+import axios from "axios";
+import { useQuery } from "@tanstack/react-query";
 
 const App = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -21,7 +23,6 @@ const App = () => {
   const dispatch = useDispatch();
 
   // const notification = useSelector((state) => state.notification);
-  const blogs = useSelector((state) => state.blogs);
   const user = useSelector((state) => state.user);
   console.log(user);
 
@@ -35,15 +36,23 @@ const App = () => {
     }
   }, []);
 
-  useEffect(() => {
-    const fetchBlogs = async () => {
-      if (user) {
-        dispatch(initializeBlogs());
-      }
-    };
-    fetchBlogs();
-  }, [user]);
+  // useEffect(() => {
+  //   const fetchBlogs = async () => {
+  //     if (user) {
+  //       dispatch(initializeBlogs());
+  //     }
+  //   };
+  //   fetchBlogs();
+  // }, [user]);
 
+  const blogs = useQuery({
+    queryKey: ["blogs"],
+    queryFn: blogService.getAll,
+  });
+
+  if (blogs.isLoading) {
+    return <div>Loading blogs...</div>;
+  }
   return isLoggedIn ? (
     <div>
       <h2>blogs</h2>
@@ -85,7 +94,7 @@ const App = () => {
       {/* <CreateBlogForm setBlogs={setBlogs} setNotification={setNotification} /> */}
 
       {!isFormVisible &&
-        blogs.map((blog) => <Blog key={blog._id} blog={blog} />)}
+        blogs.data.map((blog) => <Blog key={blog._id} blog={blog} />)}
     </div>
   ) : (
     <>
