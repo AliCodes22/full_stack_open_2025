@@ -1,17 +1,18 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import blogService from "../services/blogs";
-import {
-  clearNotification,
-  newBlogNotification,
-} from "../reducers/notificationReducer";
+
 import { useDispatch } from "react-redux";
 import { createBlogAction } from "../reducers/blogReducer";
+import NotificationContext from "../context/NotificationContext";
 
 const CreateBlogForm = () => {
   const [title, setTitle] = useState("");
   const [author, setAuthor] = useState("");
   const [url, setUrl] = useState("");
+
   const dispatch = useDispatch();
+
+  const [notification, setNotification] = useContext(NotificationContext);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -25,10 +26,10 @@ const CreateBlogForm = () => {
     try {
       dispatch(createBlogAction(blog));
 
-      dispatch(newBlogNotification(blog));
+      setNotification(blog);
 
       setTimeout(() => {
-        dispatch(clearNotification());
+        setNotification(null);
       }, 5000);
 
       setTitle("");
