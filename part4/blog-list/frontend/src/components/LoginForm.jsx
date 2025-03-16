@@ -1,11 +1,13 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import loginService from "../services/login";
 import { useSelector, useDispatch } from "react-redux";
 import { setUser } from "../reducers/userReducer";
+import UserContext from "../context/UserContext";
 
-const LoginForm = ({ setIsLoggedIn, setUser, setError }) => {
-  const [username, setUsername] = useState("");
+const LoginForm = ({ setIsLoggedIn, setError }) => {
   const [password, setPassword] = useState("");
+  const [user, setUser] = useContext(UserContext);
+  const [username, setUsername] = useState("");
 
   const dispatch = useDispatch();
 
@@ -22,7 +24,7 @@ const LoginForm = ({ setIsLoggedIn, setUser, setError }) => {
       setUsername("");
       setPassword("");
       setIsLoggedIn(true);
-      dispatch(setUser(user));
+      setUser(user);
     } catch (error) {
       setError("Wrong credentials");
       setTimeout(() => {

@@ -12,6 +12,10 @@ import { setUser } from "./reducers/userReducer";
 import NotificationContext from "./context/NotificationContext";
 import axios from "axios";
 import { useQuery } from "@tanstack/react-query";
+import UserContext from "./context/UserContext";
+import { Routes, Route } from "react-router";
+import Users from "./components/Users";
+import Blogs from "./components/Blogs";
 
 const App = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -23,8 +27,7 @@ const App = () => {
   const dispatch = useDispatch();
 
   // const notification = useSelector((state) => state.notification);
-  const user = useSelector((state) => state.user);
-  console.log(user);
+  const [user, setUser] = useContext(UserContext);
 
   //check if user's logged in
   useEffect(() => {
@@ -32,7 +35,7 @@ const App = () => {
 
     if (loggedInUser) {
       setIsLoggedIn(true);
-      dispatch(setUser(loggedInUser));
+      setUser(loggedInUser);
     }
   }, []);
 
@@ -53,55 +56,59 @@ const App = () => {
   if (blogs.isLoading) {
     return <div>Loading blogs...</div>;
   }
-  return isLoggedIn ? (
+
+  return (
     <div>
-      <h2>blogs</h2>
-      <Notification message={notification} />
-      {user && (
-        <div>
-          <div
-            style={{
-              display: "flex",
-              gap: "5px",
-            }}
-          >
-            <h3>{user.username} logged in</h3>
-            <button
-              onClick={() => {
-                window.localStorage.clear();
-                setUser(null);
-                setIsLoggedIn(false);
-              }}
-              style={{
-                border: "2px solid red",
-                width: "100px",
-                height: "50px",
-              }}
-            >
-              Log out
-            </button>
+      {isLoggedIn ? (
+        <>
+          <div>
+            <h2>blogs</h2>
+            <Notification message={notification} />
+            <div style={{ display: "flex", gap: "5px" }}>
+              <h3>{user.username} logged in</h3>
+              <button
+                onClick={() => {
+                  window.localStorage.clear();
+                  setUser(null);
+                  setIsLoggedIn(false);
+                }}
+                style={{
+                  border: "2px solid red",
+                  width: "100px",
+                  height: "50px",
+                }}
+              >
+                Log out
+              </button>
+            </div>
+
+            <Routes>
+              <Route
+                path="/"
+                element={
+                  <>
+                    <Togglable
+                      buttonLabel="Create blog"
+                      setIsFormVisible={setIsFormVisible}
+                      hideOrCancel={"Cancel"}
+                    >
+                      <CreateBlogForm />
+                    </Togglable>
+                    {!isFormVisible && <Blogs blogs={blogs} />}
+                  </>
+                }
+              />
+              <Route path="/users" element={<Users />} />
+            </Routes>
           </div>
-          <Togglable
-            buttonLabel="Create blog"
-            setIsFormVisible={setIsFormVisible}
-            hideOrCancel={"Cancel"}
-          >
-            <CreateBlogForm />
-          </Togglable>
-        </div>
+        </>
+      ) : (
+        <>
+          <ErrorMessage error={error} />
+          <LoginForm setIsLoggedIn={setIsLoggedIn} setError={setError} />
+        </>
       )}
-
-      {/* <CreateBlogForm setBlogs={setBlogs} setNotification={setNotification} /> */}
-
-      {!isFormVisible &&
-        blogs.data.map((blog) => <Blog key={blog._id} blog={blog} />)}
     </div>
-  ) : (
-    <>
-      <ErrorMessage error={error} />
-      <LoginForm setIsLoggedIn={setIsLoggedIn} setError={setError} />
-    </>
   );
 };
-
 export default App;
