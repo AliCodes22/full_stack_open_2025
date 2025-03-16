@@ -4,14 +4,25 @@ import blogService from "../services/blogs";
 import { useDispatch } from "react-redux";
 import { createBlogAction } from "../reducers/blogReducer";
 import NotificationContext from "../context/NotificationContext";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 const CreateBlogForm = () => {
   const [title, setTitle] = useState("");
   const [author, setAuthor] = useState("");
   const [url, setUrl] = useState("");
 
-  const dispatch = useDispatch();
+  // const dispatch = useDispatch();
 
+  const queryClient = useQueryClient();
+
+  const mutation = useMutation({
+    mutationFn: blogService.createBlog,
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["blogs"],
+      });
+    },
+  });
   const [notification, setNotification] = useContext(NotificationContext);
 
   const handleSubmit = async (e) => {
@@ -24,7 +35,7 @@ const CreateBlogForm = () => {
     };
 
     try {
-      dispatch(createBlogAction(blog));
+      mutation.mutate(blog);
 
       setNotification(blog);
 

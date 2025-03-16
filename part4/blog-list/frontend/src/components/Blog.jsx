@@ -3,10 +3,30 @@ import blogService from "../services/blogs";
 import Togglable from "./Togglable";
 import { useDispatch } from "react-redux";
 import { addLikeAction, deleteBlogAction } from "../reducers/blogReducer";
+import { useQueryClient, useMutation } from "@tanstack/react-query";
 
 const Blog = ({ blog }) => {
   const [areDetailsVisible, setAreDetailsVisible] = useState(false);
-  const dispatch = useDispatch();
+  // const dispatch = useDispatch();
+
+  const queryClient = useQueryClient();
+  const likeMutation = useMutation({
+    mutationFn: blogService.addLikes,
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["blogs"],
+      });
+    },
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: blogService.deleteBlog,
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["blogs"],
+      });
+    },
+  });
 
   const user = JSON.parse(window.localStorage.getItem("user"));
 
@@ -16,12 +36,12 @@ const Blog = ({ blog }) => {
       likes: blog.likes + 1,
     };
 
-    dispatch(addLikeAction(updatedBlog));
+    likeMutation.mutate(updatedBlog);
   };
 
   const handleDelete = async () => {
     if (window.confirm(`Remove blog ${blog.title} by ${blog.author}`)) {
-      dispatch(deleteBlogAction(blog._id));
+      deleteMutation.mutate(blog._id);
     }
   };
 
