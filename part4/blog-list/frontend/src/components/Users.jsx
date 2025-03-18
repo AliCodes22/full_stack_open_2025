@@ -1,5 +1,6 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { getAllUsers } from "../services/users";
+import { Link } from "react-router";
 
 const Users = () => {
   const users = useQuery({
@@ -23,17 +24,21 @@ const Users = () => {
           <h2>Users</h2>
           <ul>
             {users.data.map((user) => {
-              return <li>{user.username}</li>;
+              return (
+                <li>
+                  <Link to={`/users/${user._id}`}>{user.username}</Link>
+                </li>
+              );
             })}
           </ul>
         </div>
         <div>
           <p>Blogs created</p>
-          <ul>
+          <div>
             {users.data.map((user) => {
-              return <li>{user.blogs.length}</li>;
+              return <p>{user.blogs.length}</p>;
             })}
-          </ul>
+          </div>
         </div>
       </div>
     </div>

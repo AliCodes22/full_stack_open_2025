@@ -84,4 +84,6 @@ router.delete("/:id", userExtractor, async (req, res) => {
   }
 });
 
+router.get("/:id", async (req, res) => {});
+
 module.exports = router;
