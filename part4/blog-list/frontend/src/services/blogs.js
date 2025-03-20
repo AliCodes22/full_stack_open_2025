@@ -69,4 +69,17 @@ const deleteBlog = async (id) => {
   return response.data;
 };
 
+export const getSingleBlog = async (id) => {
+  const { token } = getTokenAndUser();
+
+  const response = await axios.get(`${baseUrl}/${id}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    },
+  });
+
+  return response.data;
+};
+
 export default { getAll, createBlog, addLikes, deleteBlog };

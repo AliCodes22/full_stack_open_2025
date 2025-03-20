@@ -17,6 +17,7 @@ import { Routes, Route } from "react-router";
 import Users from "./components/Users";
 import Blogs from "./components/Blogs";
 import User from "./components/User";
+import SingleBlog from "./components/SingleBlog";
 
 const App = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -101,6 +102,7 @@ const App = () => {
               />
               <Route path="/users" element={<Users />} />
               <Route path="/users/:id" element={<User />} />
+              <Route path="/blogs/:id" element={<SingleBlog />} />
             </Routes>
           </div>
         </>

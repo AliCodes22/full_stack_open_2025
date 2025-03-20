@@ -84,6 +84,18 @@ router.delete("/:id", userExtractor, async (req, res) => {
   }
 });
 
-router.get("/:id", async (req, res) => {});
+router.get("/:id", async (req, res) => {
+  const { id } = req.params;
+
+  const blog = await Blog.findById(id);
+
+  if (!blog) {
+    return res.status(400).json({
+      message: "not found",
+    });
+  }
+
+  return res.status(200).json(blog);
+});
 
 module.exports = router;
