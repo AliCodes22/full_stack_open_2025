@@ -18,6 +18,7 @@ import Users from "./components/Users";
 import Blogs from "./components/Blogs";
 import User from "./components/User";
 import SingleBlog from "./components/SingleBlog";
+import Navbar from "./components/Navbar";
 
 const App = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -67,7 +68,7 @@ const App = () => {
             <h2>blogs</h2>
             <Notification message={notification} />
             <div style={{ display: "flex", gap: "5px" }}>
-              <h3>{user.username} logged in</h3>
+              {/* <h3>{user.username} logged in</h3>
               <button
                 onClick={() => {
                   window.localStorage.clear();
@@ -81,7 +82,8 @@ const App = () => {
                 }}
               >
                 Log out
-              </button>
+              </button> */}
+              <Navbar setIsLoggedIn={setIsLoggedIn} />
             </div>
 
             <Routes>

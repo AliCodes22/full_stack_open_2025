@@ -98,4 +98,31 @@ router.get("/:id", async (req, res) => {
   return res.status(200).json(blog);
 });
 
+router.post("/:id/comments", async (req, res) => {
+  const { comment } = req.body;
+
+  if (!comment) {
+    return res.status(400).json({
+      message: "please leave a comment",
+    });
+  }
+  const { id } = req.params;
+
+  const blog = await Blog.findById(id);
+
+  if (!blog) {
+    return res.status(404).json({
+      message: "blog not found",
+    });
+  }
+
+  const updatedComments = [...blog.comments, comment];
+
+  blog.comments = updatedComments;
+
+  await blog.save();
+
+  return res.status(200).json(updatedComments);
+});
+
 module.exports = router;

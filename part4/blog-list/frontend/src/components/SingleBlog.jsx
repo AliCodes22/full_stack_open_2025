@@ -31,6 +31,10 @@ const SingleBlog = () => {
     likeMutation.mutate(updatedBlog);
   };
 
+  const handleSubmit = (e) => {
+    e.preventDefault();
+  };
+
   console.log(blog.data);
 
   if (blog.isLoading) {
@@ -48,6 +52,14 @@ const SingleBlog = () => {
         <button onClick={handleLikes}>like</button>
       </p>
       <p>Added by {author}</p>
+
+      <div>
+        <h3>Comments</h3>
+        <form onSubmit={handleSubmit}>
+          <input type="text" />
+          <button type="submit">Add Comment</button>
+        </form>
+      </div>
     </div>
   );
 };
