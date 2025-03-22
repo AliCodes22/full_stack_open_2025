@@ -1,11 +1,14 @@
 import { Link, useParams } from "react-router";
-import { getSingleBlog } from "../services/blogs";
+import { addComment, getSingleBlog } from "../services/blogs";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import blogService from "../services/blogs";
+import { useState } from "react";
 
 const SingleBlog = () => {
   const { id } = useParams();
   const queryClient = useQueryClient();
+
+  const [comment, setComment] = useState("");
 
   const blog = useQuery({
     queryFn: () => getSingleBlog(id),
@@ -14,6 +17,15 @@ const SingleBlog = () => {
 
   const likeMutation = useMutation({
     mutationFn: (updatedBlog) => blogService.addLikes(updatedBlog),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["blog", id],
+      });
+    },
+  });
+
+  const commentMutation = useMutation({
+    mutationFn: addComment,
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: ["blog", id],
@@ -31,17 +43,33 @@ const SingleBlog = () => {
     likeMutation.mutate(updatedBlog);
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+  const onChange = (e) => {
+    setComment(e.target.value);
   };
 
-  console.log(blog.data);
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    console.log("submitted", comment);
+    if (!comment) {
+      return;
+    }
+
+    const object = {
+      id,
+      comment,
+    };
+
+    console.log(object);
+    commentMutation.mutate(object);
+    setComment("");
+  };
 
   if (blog.isLoading) {
     return <div>Loading...</div>;
   }
 
-  const { title, author, url, likes } = blog.data;
+  const { title, author, url, likes, comments } = blog.data;
   return (
     <div>
       <Link to="/">Go back</Link>
@@ -56,8 +84,15 @@ const SingleBlog = () => {
       <div>
         <h3>Comments</h3>
         <form onSubmit={handleSubmit}>
-          <input type="text" />
-          <button type="submit">Add Comment</button>
+          <input type="text" onChange={onChange} value={comment} />
+          <button type="submit" onClick={handleSubmit}>
+            Add Comment
+          </button>
+          <ul>
+            {comments.map((comment) => {
+              return <li>{comment}</li>;
+            })}
+          </ul>
         </form>
       </div>
     </div>

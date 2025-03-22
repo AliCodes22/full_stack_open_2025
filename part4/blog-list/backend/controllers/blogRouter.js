@@ -100,6 +100,7 @@ router.get("/:id", async (req, res) => {
 
 router.post("/:id/comments", async (req, res) => {
   const { comment } = req.body;
+  console.log(req.body);
 
   if (!comment) {
     return res.status(400).json({
