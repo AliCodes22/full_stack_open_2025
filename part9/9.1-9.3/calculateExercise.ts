@@ -10,7 +10,10 @@ interface Training {
   ratingExplanation: string;
 }
 
-const calculateExercise = (hours: number[], target: number): Training => {
+export const calculateExercise = (
+  hours: number[],
+  target: number
+): Training => {
   const numberOfDays: number = hours.length;
   const trainingDays = hours.filter((day) => day !== 0);
   const average =
