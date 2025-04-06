@@ -3,6 +3,7 @@ import patientsData from "../data/patients";
 import { PatientInfo, Patient, PatientSchema } from "../types/Patient";
 import { v1 as uuid } from "uuid";
 import { z } from "zod";
+import { Entry } from "../types/Patient";
 
 const patientsRouter = Router();
 
@@ -51,6 +52,44 @@ patientsRouter.post("/", (req, res) => {
       });
     }
   }
+});
+
+patientsRouter.post("/:id/entries", (req, res) => {
+  const { id } = req.params;
+
+  const patient = patientsData.find((item) => item.id === id);
+  const entry: Entry = req.body;
+
+  if (
+    entry.type !== "HealthCheck" &&
+    entry.type !== "OccupationalHealthcare" &&
+    entry.type !== "Hospital"
+  ) {
+    res.status(400).json({
+      message: "Wrong entry type",
+    });
+    return;
+  }
+
+  if (entry.type === "HealthCheck") {
+    if (entry.healthCheckRating < 0 || entry.healthCheckRating > 3) {
+      res.status(400).json({
+        message: `Value of healthCheckRating incorrect ${entry.healthCheckRating}`,
+      });
+      return;
+    }
+  }
+
+  if (!patient) {
+    res.status(400).json({
+      message: "Patient not found",
+    });
+    return;
+  }
+
+  patient?.entries.push(entry);
+
+  res.status(200).json(patient);
 });
 
 export default patientsRouter;
