@@ -3,7 +3,7 @@ import patientsData from "../data/patients";
 import { PatientInfo, Patient, PatientSchema } from "../types/Patient";
 import { v1 as uuid } from "uuid";
 import { z } from "zod";
-import { Entry } from "../types/Patient";
+import { Entry } from "../types/Diagnosis";
 
 const patientsRouter = Router();
 
@@ -72,7 +72,9 @@ patientsRouter.post("/:id/entries", (req, res) => {
   }
 
   if (entry.type === "HealthCheck") {
-    if (entry.healthCheckRating < 0 || entry.healthCheckRating > 3) {
+    const rating = Number(entry.healthCheckRating);
+
+    if (rating < 0 || rating > 3) {
       res.status(400).json({
         message: `Value of healthCheckRating incorrect ${entry.healthCheckRating}`,
       });
@@ -89,7 +91,19 @@ patientsRouter.post("/:id/entries", (req, res) => {
 
   patient?.entries.push(entry);
 
-  res.status(200).json(patient);
+  res.status(200).json(entry);
 });
+
+// patientsRouter.delete("/:id/entries", (req, res) => {
+//   const { id } = req.params;
+
+//   const entry = patientsData.entries.find((entry: Entry) => entry.id === id);
+
+//   if (!entry) {
+//     res.status(404).json({
+//       message: "invalid entry",
+//     });
+//   }
+// });
 
 export default patientsRouter;

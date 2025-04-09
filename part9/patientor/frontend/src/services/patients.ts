@@ -9,15 +9,14 @@ const getAll = async () => {
   return data;
 };
 
-const create = async (object: PatientFormValues) => {
-  const { data } = await axios.post<Patient>(`${apiBaseUrl}/patients`, object);
+const create = async (object: PatientFormValues): Promise<Patient> => {
+  const response = await axios.post<Patient>(`${apiBaseUrl}/patients`, object);
 
-  return data;
+  return response.data;
 };
 
 const getSinglePatient = async (id: string): Promise<Patient> => {
   const response = await axios.get<Patient>(`${apiBaseUrl}/patients/${id}`);
-  console.log(response.data);
 
   return response.data;
 };

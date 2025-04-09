@@ -5,11 +5,11 @@ import { Entry, Patient } from "../types";
 import patientService from "../services/patients";
 import { AxiosError } from "axios";
 
-const HealthCheckEntry = ({ setDiagnoses, id }) => {
+const HealthCheckEntry = ({ id, setPatient }) => {
   const [date, setDate] = useState("");
   const [description, setDescription] = useState("");
   const [specialist, setSpecialist] = useState("");
-  const [rating, setRating] = useState("");
+  const [healthCheckRating, setHealthCheckRating] = useState("");
   const [codes, setCodes] = useState<string[]>([]);
 
   const inputStyle = {
@@ -27,20 +27,24 @@ const HealthCheckEntry = ({ setDiagnoses, id }) => {
       date,
       description,
       specialist,
-      rating,
+      healthCheckRating,
       diagnosisCodes: codes,
       type: "HealthCheck",
     };
 
     try {
       const response = await patientService.addNewEntry(id, newEntry);
-      setDiagnoses((prev) => [...prev, response]);
+      console.log(response);
+      setPatient((prev) =>
+        prev ? { ...prev, entries: [...prev.entries, response] } : prev
+      );
 
       return response;
     } catch (error: AxiosError) {
       return error.response?.data?.message || error.message;
     }
   };
+
   return (
     <>
       <form
@@ -94,12 +98,16 @@ const HealthCheckEntry = ({ setDiagnoses, id }) => {
         <div style={{ display: "flex", flexDirection: "column" }}>
           <label htmlFor="rating">Healthcheck Rating</label>
           <input
-            type="text"
-            id="rating"
-            style={inputStyle}
-            value={rating}
-            required
-            onChange={(e) => setRating(e.target.value)}
+            type="number"
+            inputMode="numeric"
+            style={{
+              ...inputStyle,
+              appearance: "textfield",
+            }}
+            value={healthCheckRating}
+            min={0}
+            max={3}
+            onChange={(e) => setHealthCheckRating(e.target.value)}
           />
         </div>
 

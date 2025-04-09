@@ -58,7 +58,7 @@ export const PatientSchema = z.object({
   gender: z.enum(["male", "female"]),
   occupation: z.string(),
   ssn: z.string(),
-  entries: z.array(EntrySchema),
+  entries: z.array(EntrySchema).optional(),
 });
 
 export type Patient = z.infer<typeof PatientSchema>;

@@ -47,6 +47,7 @@ const AddPatientForm = ({ onCancel, onSubmit }: Props) => {
 
   const addPatient = (event: SyntheticEvent) => {
     event.preventDefault();
+    console.log("clicked");
     onSubmit({
       name,
       occupation,

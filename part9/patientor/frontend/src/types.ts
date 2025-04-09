@@ -23,7 +23,7 @@ export interface Entry {
   creationDate: Date;
   specialist: string;
   diagnosisCodes?: string[];
-  rating: string;
+  healthCheckRating: string;
   date: string;
   employerName?: string;
   type: string;

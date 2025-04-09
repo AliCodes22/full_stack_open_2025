@@ -60,7 +60,7 @@ const PatientPage = () => {
       <div>
         <p>SSN: {patient.ssn}</p>
         <p>Occupation: {patient.occupation}</p>
-        <HealthCheckEntry setDiagnoses={setDiagnoses} id={id} />
+        <HealthCheckEntry id={id} setPatient={setPatient} />
 
         {}
 
