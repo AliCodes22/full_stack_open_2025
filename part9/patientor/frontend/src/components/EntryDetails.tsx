@@ -30,6 +30,13 @@ const EntryDetails = ({
     color: rating === 0 ? "green" : "yellow",
   };
 
+  const deleteButtonStyle = {
+    backgroundColor: "red",
+    padding: "2px",
+    width: "5em",
+    border: "2px solid red",
+  };
+
   switch (type) {
     case "HealthCheck":
       return (
@@ -49,6 +56,10 @@ const EntryDetails = ({
             <FavoriteIcon style={heartIconStyle} />
           </div>
           <p>Diagnose by {specialist}</p>
+
+          <div>
+            <button style={deleteButtonStyle}>Delete</button>
+          </div>
         </div>
       );
     case "OccupationalHealthcare":
@@ -62,6 +73,9 @@ const EntryDetails = ({
           </div>
 
           <p>Diagnose by {specialist}</p>
+          <div>
+            <button style={deleteButtonStyle}>Delete</button>
+          </div>
         </div>
       );
     case "Hospital":
@@ -76,6 +90,9 @@ const EntryDetails = ({
           </div>
           <div>{rating && <FavoriteIcon />}</div>
           <p>Diagnose by {specialist}</p>
+          <div>
+            <button style={deleteButtonStyle}>Delete</button>
+          </div>
         </div>
       );
   }

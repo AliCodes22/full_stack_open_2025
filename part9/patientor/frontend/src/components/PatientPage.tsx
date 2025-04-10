@@ -11,6 +11,7 @@ import HealthCheckEntry from "./HealthCheckEntry";
 
 const PatientPage = () => {
   const [patient, setPatient] = useState<Patient | null>(null);
+  console.log(patient);
 
   const [diagnoses, setDiagnoses] = useState<Diagnosis | null>(null);
   const iconStyle = {
@@ -67,7 +68,7 @@ const PatientPage = () => {
         {diagnoses && (
           <>
             <h3>Entries</h3>
-            {patient.entries.length > 0 ? (
+            {patient.entries?.length > 0 ? (
               patient.entries.map((entry: Entry) => (
                 <>
                   <EntryDetails

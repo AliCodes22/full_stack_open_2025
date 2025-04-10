@@ -89,21 +89,33 @@ patientsRouter.post("/:id/entries", (req, res) => {
     return;
   }
 
-  patient?.entries.push(entry);
+  patient?.entries?.push(entry);
 
   res.status(200).json(entry);
 });
 
-// patientsRouter.delete("/:id/entries", (req, res) => {
-//   const { id } = req.params;
+patientsRouter.delete("/:id/entries/:entryId", (req, res) => {
+  const { id } = req.params;
+  const { entryId } = req.params;
 
-//   const entry = patientsData.entries.find((entry: Entry) => entry.id === id);
+  const patient = patientsData.find((patient) => patient.id === id);
 
-//   if (!entry) {
-//     res.status(404).json({
-//       message: "invalid entry",
-//     });
-//   }
-// });
+  console.log(entryId, id);
+
+  if (!patient) {
+    res.status(404).json({
+      message: "patient not found or entry not found",
+    });
+    return;
+  }
+
+  const updatedEntries = patient?.entries?.filter(
+    (entry) => entry.id !== entryId
+  );
+
+  patient.entries = updatedEntries;
+
+  res.status(200).json(patient);
+});
 
 export default patientsRouter;
