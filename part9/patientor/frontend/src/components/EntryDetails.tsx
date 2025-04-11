@@ -3,6 +3,9 @@ import MedicalServicesIcon from "@mui/icons-material/MedicalServices";
 import WorkIcon from "@mui/icons-material/Work";
 import LocalHospitalIcon from "@mui/icons-material/LocalHospital";
 import patientService from "../services/patients";
+import axios, { AxiosError } from "axios";
+
+import { Patient } from "../types";
 
 interface EntryDetailsProps {
   date: string;
@@ -13,6 +16,7 @@ interface EntryDetailsProps {
   rating: number;
   id: string;
   patientId: string;
+  setPatient: React.Dispatch<React.SetStateAction<Patient | null>>;
 }
 
 const EntryDetails = ({
@@ -24,6 +28,7 @@ const EntryDetails = ({
   rating,
   type,
   id,
+  setPatient,
 }: EntryDetailsProps) => {
   // styles
   const entryStyle = {
@@ -46,13 +51,36 @@ const EntryDetails = ({
   const handleDelete = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    window.alert("Are you sure you want to delete this entry?");
+    const confirm = window.confirm("Delete this entry?");
 
-    // try {
-    //   const { data } = await patientService.deleteEntry(patientId, id);
+    if (confirm) {
+      try {
+        const data = await patientService.deleteEntry(patientId, id);
 
-    //   console.log(data);
-    // } catch (error) {}
+        setPatient((prev) => (prev ? { ...prev, entries: data } : prev));
+        console.log(data);
+      } catch (error: AxiosError) {
+        if (axios.isAxiosError(error)) {
+          const handleDelete = async (e: React.FormEvent) => {
+            e.preventDefault();
+
+            const confirm = window.confirm("Delete this entry?");
+
+            if (confirm) {
+              try {
+                const { data } = await patientService.deleteEntry(
+                  patientId,
+                  id
+                );
+                console.log(data);
+              } catch (error) {
+                alert("Failed to delete entry: " + error.message);
+              }
+            }
+          };
+        }
+      }
+    }
   };
 
   switch (type) {

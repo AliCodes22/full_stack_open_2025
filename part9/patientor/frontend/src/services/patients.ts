@@ -46,6 +46,8 @@ const deleteEntry = async (patientId: string, entryId: string) => {
       `${apiBaseUrl}/patients/${patientId}/entries/${entryId}`
     );
 
+    console.log(response);
+
     return response.data;
   } catch (error) {
     if (axios.isAxiosError(error)) {
