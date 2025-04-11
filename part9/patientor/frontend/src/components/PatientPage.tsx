@@ -77,6 +77,8 @@ const PatientPage = () => {
                     specialist={entry.specialist}
                     employer={entry.employerName}
                     type={entry.type}
+                    id={entry.id}
+                    patientId={id}
                     rating={entry.healthCheckRating}
                   />
                   {entry.diagnosisCodes && (

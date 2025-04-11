@@ -2,30 +2,35 @@ import FavoriteIcon from "@mui/icons-material/Favorite";
 import MedicalServicesIcon from "@mui/icons-material/MedicalServices";
 import WorkIcon from "@mui/icons-material/Work";
 import LocalHospitalIcon from "@mui/icons-material/LocalHospital";
+import patientService from "../services/patients";
 
 interface EntryDetailsProps {
   date: string;
   details: string;
-  icon: React.ReactNode;
   specialist: string;
   employer?: string;
   type: string;
   rating: number;
+  id: string;
+  patientId: string;
 }
 
 const EntryDetails = ({
   date,
   details,
-  icon,
+  patientId,
   specialist,
   employer,
   rating,
   type,
+  id,
 }: EntryDetailsProps) => {
+  // styles
   const entryStyle = {
     border: "black 4px solid",
     marginBottom: "10px",
   };
+
   const heartIconStyle = {
     color: rating === 0 ? "green" : "yellow",
   };
@@ -35,6 +40,19 @@ const EntryDetails = ({
     padding: "2px",
     width: "5em",
     border: "2px solid red",
+  };
+
+  // handlers
+  const handleDelete = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    window.alert("Are you sure you want to delete this entry?");
+
+    // try {
+    //   const { data } = await patientService.deleteEntry(patientId, id);
+
+    //   console.log(data);
+    // } catch (error) {}
   };
 
   switch (type) {
@@ -58,7 +76,13 @@ const EntryDetails = ({
           <p>Diagnose by {specialist}</p>
 
           <div>
-            <button style={deleteButtonStyle}>Delete</button>
+            <button
+              onClick={handleDelete}
+              style={deleteButtonStyle}
+              type="button"
+            >
+              Delete
+            </button>
           </div>
         </div>
       );
@@ -74,7 +98,13 @@ const EntryDetails = ({
 
           <p>Diagnose by {specialist}</p>
           <div>
-            <button style={deleteButtonStyle}>Delete</button>
+            <button
+              onClick={handleDelete}
+              style={deleteButtonStyle}
+              type="button"
+            >
+              Delete
+            </button>
           </div>
         </div>
       );
@@ -91,7 +121,13 @@ const EntryDetails = ({
           <div>{rating && <FavoriteIcon />}</div>
           <p>Diagnose by {specialist}</p>
           <div>
-            <button style={deleteButtonStyle}>Delete</button>
+            <button
+              onClick={handleDelete}
+              style={deleteButtonStyle}
+              type="button"
+            >
+              Delete
+            </button>
           </div>
         </div>
       );

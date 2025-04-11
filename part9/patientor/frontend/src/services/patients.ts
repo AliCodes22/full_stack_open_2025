@@ -40,9 +40,25 @@ const addNewEntry = async (
   }
 };
 
+const deleteEntry = async (patientId: string, entryId: string) => {
+  try {
+    const response = await axios.delete(
+      `${apiBaseUrl}/patients/${patientId}/entries/${entryId}`
+    );
+
+    return response.data;
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      return error.response?.data?.message || error.message;
+    }
+    return "Error occurred";
+  }
+};
+
 export default {
   getAll,
   create,
   getSinglePatient,
   addNewEntry,
+  deleteEntry,
 };

@@ -100,8 +100,6 @@ patientsRouter.delete("/:id/entries/:entryId", (req, res) => {
 
   const patient = patientsData.find((patient) => patient.id === id);
 
-  console.log(entryId, id);
-
   if (!patient) {
     res.status(404).json({
       message: "patient not found or entry not found",
@@ -115,7 +113,7 @@ patientsRouter.delete("/:id/entries/:entryId", (req, res) => {
 
   patient.entries = updatedEntries;
 
-  res.status(200).json(patient);
+  res.status(200).json(updatedEntries);
 });
 
 export default patientsRouter;
