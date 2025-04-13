@@ -4,6 +4,7 @@ import { Entry, Patient } from "../types";
 
 import patientService from "../services/patients";
 import { AxiosError } from "axios";
+import { toast, Bounce } from "react-toastify";
 
 const HealthCheckEntry = ({ id, setPatient }) => {
   const [date, setDate] = useState("");
@@ -38,6 +39,17 @@ const HealthCheckEntry = ({ id, setPatient }) => {
       setPatient((prev) =>
         prev ? { ...prev, entries: [...prev.entries, response] } : prev
       );
+      toast.success("Entry Created!", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+        transition: Bounce,
+      });
 
       return response;
     } catch (error: AxiosError) {

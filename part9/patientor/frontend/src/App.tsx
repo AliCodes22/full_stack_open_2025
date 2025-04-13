@@ -8,7 +8,7 @@ import { Patient } from "./types";
 import patientService from "./services/patients";
 import PatientListPage from "./components/PatientListPage";
 import PatientPage from "./components/PatientPage";
-import { ToastContainer } from "react-toastify";
+import { Bounce, ToastContainer } from "react-toastify";
 
 const App = () => {
   const [patients, setPatients] = useState<Patient[]>([]);
@@ -46,7 +46,19 @@ const App = () => {
             />
             <Route path="/patients/:id" element={<PatientPage />} />
           </Routes>
-          <ToastContainer />
+          <ToastContainer
+            position="top-right"
+            autoClose={5000}
+            hideProgressBar={false}
+            newestOnTop={false}
+            closeOnClick={false}
+            rtl={false}
+            pauseOnFocusLoss
+            draggable
+            pauseOnHover
+            theme="light"
+            transition={Bounce}
+          />
         </Container>
       </Router>
     </div>

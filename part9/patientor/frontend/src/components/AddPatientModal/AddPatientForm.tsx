@@ -9,7 +9,7 @@ import {
   Button,
   SelectChangeEvent,
 } from "@mui/material";
-
+import { toast, Bounce } from "react-toastify";
 import { PatientFormValues, Gender } from "../../types";
 
 interface Props {
@@ -54,6 +54,17 @@ const AddPatientForm = ({ onCancel, onSubmit }: Props) => {
       ssn,
       dateOfBirth,
       gender,
+    });
+    toast.success("Patient Created!", {
+      position: "top-right",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: false,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "light",
+      transition: Bounce,
     });
   };
 

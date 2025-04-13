@@ -4,7 +4,7 @@ import WorkIcon from "@mui/icons-material/Work";
 import LocalHospitalIcon from "@mui/icons-material/LocalHospital";
 import patientService from "../services/patients";
 import axios, { AxiosError } from "axios";
-import { ToastContainer, toast } from "react-toastify";
+import { ToastContainer, toast, Bounce } from "react-toastify";
 
 import { Patient } from "../types";
 
@@ -59,7 +59,17 @@ const EntryDetails = ({
         const data = await patientService.deleteEntry(patientId, id);
 
         setPatient((prev) => (prev ? { ...prev, entries: data } : prev));
-        toast("Deleted");
+        toast.success("Entry Deleted!", {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: false,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+          transition: Bounce,
+        });
       } catch (error: AxiosError) {
         if (axios.isAxiosError(error)) {
           const handleDelete = async (e: React.FormEvent) => {
