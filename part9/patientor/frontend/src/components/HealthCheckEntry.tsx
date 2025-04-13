@@ -6,20 +6,21 @@ import patientService from "../services/patients";
 import { AxiosError } from "axios";
 import { toast, Bounce } from "react-toastify";
 
+import {
+  Box,
+  Button,
+  TextField,
+  Typography,
+  Paper,
+  Stack,
+} from "@mui/material";
+
 const HealthCheckEntry = ({ id, setPatient }) => {
   const [date, setDate] = useState("");
   const [description, setDescription] = useState("");
   const [specialist, setSpecialist] = useState("");
   const [healthCheckRating, setHealthCheckRating] = useState("");
   const [codes, setCodes] = useState<string[]>([]);
-
-  const inputStyle = {
-    border: "none",
-    outline: "none",
-    padding: "0.5rem",
-    backgroundColor: "transparent",
-    borderBottom: "2px solid black",
-  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -35,7 +36,6 @@ const HealthCheckEntry = ({ id, setPatient }) => {
 
     try {
       const response = await patientService.addNewEntry(id, newEntry);
-      console.log(response);
       setPatient((prev) =>
         prev ? { ...prev, entries: [...prev.entries, response] } : prev
       );
@@ -50,7 +50,6 @@ const HealthCheckEntry = ({ id, setPatient }) => {
         theme: "light",
         transition: Bounce,
       });
-
       return response;
     } catch (error: AxiosError) {
       return error.response?.data?.message || error.message;
@@ -58,87 +57,64 @@ const HealthCheckEntry = ({ id, setPatient }) => {
   };
 
   return (
-    <>
-      <form
-        style={{
-          border: "2px dashed black",
-          padding: "1rem",
-          maxWidth: "400px",
-          display: "flex",
-          flexDirection: "column",
-          gap: "1rem",
-        }}
-        onSubmit={handleSubmit}
-      >
-        <h3>New Healthcheck Entry</h3>
-        <div style={{ display: "flex", flexDirection: "column" }}>
-          <label htmlFor="description">Description</label>
-          <input
-            type="text"
-            id="description"
-            style={inputStyle}
-            value={description}
+    <Paper elevation={3} sx={{ p: 3, maxWidth: 500, mt: 4 }}>
+      <form onSubmit={handleSubmit}>
+        <Typography variant="h5" gutterBottom>
+          New Health Check Entry
+        </Typography>
+
+        <Stack spacing={2}>
+          <TextField
+            label="Description"
+            variant="outlined"
+            fullWidth
             required
+            value={description}
             onChange={(e) => setDescription(e.target.value)}
           />
-        </div>
 
-        <div style={{ display: "flex", flexDirection: "column" }}>
-          <label htmlFor="date">Date</label>
-          <input
+          <TextField
+            label="Date"
             type="date"
-            id="date"
-            style={inputStyle}
-            value={date}
+            fullWidth
             required
+            InputLabelProps={{ shrink: true }}
+            value={date}
             onChange={(e) => setDate(e.target.value)}
           />
-        </div>
 
-        <div style={{ display: "flex", flexDirection: "column" }}>
-          <label htmlFor="specialist">Specialist</label>
-          <input
-            type="text"
-            id="specialist"
-            style={inputStyle}
-            value={specialist}
+          <TextField
+            label="Specialist"
+            variant="outlined"
+            fullWidth
             required
+            value={specialist}
             onChange={(e) => setSpecialist(e.target.value)}
           />
-        </div>
 
-        <div style={{ display: "flex", flexDirection: "column" }}>
-          <label htmlFor="rating">Healthcheck Rating</label>
-          <input
+          <TextField
+            label="Healthcheck Rating (0-3)"
             type="number"
-            inputMode="numeric"
-            style={{
-              ...inputStyle,
-              appearance: "textfield",
-            }}
+            fullWidth
+            required
+            inputProps={{ min: 0, max: 3 }}
             value={healthCheckRating}
-            min={0}
-            max={3}
             onChange={(e) => setHealthCheckRating(e.target.value)}
           />
-        </div>
 
-        <div style={{ display: "flex", flexDirection: "column" }}>
           <MultipleSelect setCodes={setCodes} codes={codes} />
-        </div>
 
-        <button
-          type="submit"
-          style={{
-            width: "60px",
-            background: "#2f9b55",
-            border: "2px solid black",
-          }}
-        >
-          Add
-        </button>
+          <Button
+            type="submit"
+            variant="contained"
+            color="success"
+            sx={{ width: "120px", alignSelf: "center", mt: 1 }}
+          >
+            Add Entry
+          </Button>
+        </Stack>
       </form>
-    </>
+    </Paper>
   );
 };
 

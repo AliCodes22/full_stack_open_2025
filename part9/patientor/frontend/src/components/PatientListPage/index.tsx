@@ -1,6 +1,7 @@
 import { useState } from "react";
 import {
   Box,
+  Container,
   Table,
   Button,
   TableHead,
@@ -8,12 +9,17 @@ import {
   TableCell,
   TableRow,
   TableBody,
+  Paper,
+  Avatar,
+  Grid,
+  Fab,
+  Tooltip,
 } from "@mui/material";
+import AddIcon from "@mui/icons-material/Add";
 import axios from "axios";
 
 import { PatientFormValues, Patient } from "../../types";
 import AddPatientModal from "../AddPatientModal";
-
 import HealthRatingBar from "../HealthRatingBar";
 
 import patientService from "../../services/patients";
@@ -29,7 +35,6 @@ const PatientListPage = ({ patients, setPatients }: Props) => {
   const [error, setError] = useState<string>();
 
   const openModal = (): void => setModalOpen(true);
-
   const closeModal = (): void => {
     setModalOpen(false);
     setError(undefined);
@@ -37,9 +42,7 @@ const PatientListPage = ({ patients, setPatients }: Props) => {
 
   const submitNewPatient = async (values: PatientFormValues) => {
     try {
-      console.log(values);
       const patient: Patient = await patientService.create(values);
-
       setPatients(patients.concat(patient));
       setModalOpen(false);
     } catch (e: unknown) {
@@ -49,60 +52,70 @@ const PatientListPage = ({ patients, setPatients }: Props) => {
             "Something went wrong. Error: ",
             ""
           );
-          console.error(message);
           setError(message);
         } else {
           setError("Unrecognized axios error");
         }
       } else {
-        console.error("Unknown error", e);
         setError("Unknown error");
       }
     }
   };
 
   return (
-    <div className="App">
-      <Box>
-        <Typography align="center" variant="h6">
-          Patient list
+    <Container maxWidth="md">
+      <Box mt={4} mb={2}>
+        <Typography align="center" variant="h4" gutterBottom>
+          Patient Directory
         </Typography>
       </Box>
-      <Table style={{ marginBottom: "1em" }}>
-        <TableHead>
-          <TableRow>
-            <TableCell>Name</TableCell>
-            <TableCell>Gender</TableCell>
-            <TableCell>Occupation</TableCell>
-            <TableCell>Health Rating</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {Object.values(patients).map((patient: Patient) => (
-            <TableRow key={patient.id}>
-              <TableCell>
-                <Link to={`/patients/${patient.id}`}>{patient.name}</Link>
-              </TableCell>
 
-              <TableCell>{patient.gender}</TableCell>
-              <TableCell>{patient.occupation}</TableCell>
-              <TableCell>
-                <HealthRatingBar showText={false} rating={1} />
-              </TableCell>
+      <Paper elevation={4}>
+        <Table>
+          <TableHead>
+            <TableRow style={{ backgroundColor: "#f5f5f5" }}>
+              <TableCell>Name</TableCell>
+              <TableCell>Gender</TableCell>
+              <TableCell>Occupation</TableCell>
+              <TableCell align="center">Health Rating</TableCell>
             </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+          </TableHead>
+          <TableBody>
+            {patients.map((patient) => (
+              <TableRow
+                key={patient.id}
+                hover
+                sx={{ "&:hover": { backgroundColor: "#fafafa" } }}
+              >
+                <TableCell>
+                  <Link to={`/patients/${patient.id}`}>{patient.name}</Link>
+                </TableCell>
+                <TableCell>{patient.gender}</TableCell>
+                <TableCell>{patient.occupation}</TableCell>
+                <TableCell align="center">
+                  <HealthRatingBar showText={false} rating={1} />
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </Paper>
+
       <AddPatientModal
         modalOpen={modalOpen}
         onSubmit={submitNewPatient}
         error={error}
         onClose={closeModal}
       />
-      <Button variant="contained" onClick={() => openModal()}>
-        Add New Patient
-      </Button>
-    </div>
+
+      <Box mt={4} display="flex" justifyContent="center">
+        <Tooltip title="Add New Patient">
+          <Fab color="primary" onClick={openModal}>
+            <AddIcon />
+          </Fab>
+        </Tooltip>
+      </Box>
+    </Container>
   );
 };
 

@@ -1,14 +1,24 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { BrowserRouter as Router, Route, Link, Routes } from "react-router-dom";
-import { Button, Divider, Container, Typography } from "@mui/material";
+import {
+  AppBar,
+  Toolbar,
+  Typography,
+  Container,
+  CssBaseline,
+  Box,
+  Button,
+  Paper,
+} from "@mui/material";
+import { Bounce, ToastContainer } from "react-toastify";
 
 import { Patient } from "./types";
-
 import patientService from "./services/patients";
 import PatientListPage from "./components/PatientListPage";
 import PatientPage from "./components/PatientPage";
-import { Bounce, ToastContainer } from "react-toastify";
+
+import "react-toastify/dist/ReactToastify.css";
 
 const App = () => {
   const [patients, setPatients] = useState<Patient[]>([]);
@@ -21,19 +31,22 @@ const App = () => {
     fetchPatientList();
   }, []);
 
-  console.log(patients);
-
   return (
-    <div className="App">
-      <Router>
-        <Container>
-          <Typography variant="h3" style={{ marginBottom: "0.5em" }}>
+    <Router>
+      <CssBaseline />
+      <AppBar position="static" elevation={2}>
+        <Toolbar>
+          <Typography variant="h5" sx={{ flexGrow: 1 }}>
             Patientor
           </Typography>
-          <Button component={Link} to="/" variant="contained" color="primary">
+          <Button component={Link} to="/" color="inherit">
             Home
           </Button>
-          <Divider hidden />
+        </Toolbar>
+      </AppBar>
+
+      <Container maxWidth="md" sx={{ mt: 4, mb: 4 }}>
+        <Paper elevation={3} sx={{ p: 3 }}>
           <Routes>
             <Route
               path="/"
@@ -46,22 +59,21 @@ const App = () => {
             />
             <Route path="/patients/:id" element={<PatientPage />} />
           </Routes>
-          <ToastContainer
-            position="top-right"
-            autoClose={5000}
-            hideProgressBar={false}
-            newestOnTop={false}
-            closeOnClick={false}
-            rtl={false}
-            pauseOnFocusLoss
-            draggable
-            pauseOnHover
-            theme="light"
-            transition={Bounce}
-          />
-        </Container>
-      </Router>
-    </div>
+        </Paper>
+      </Container>
+
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        closeOnClick
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+        transition={Bounce}
+      />
+    </Router>
   );
 };
 
